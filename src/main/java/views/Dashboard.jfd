@@ -1,0 +1,74 @@
+JFDML JFormDesigner: "7.0.5.4.420" Java: "11.0.13" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq t {par t {seq t {space :::p, comp tabbedPane1:::::x}, seq t {space :p:15:p, comp label1:::p::p, space :::x, comp button1:::p::p}}, space :p:30:p}}"
+			"$verticalGroup": "par l {seq l {space :::p, par b {comp button1::b:p::p, comp label1::b:p::p}, space s:::p, comp tabbedPane1:::p:482:p, space :::x}}"
+		} ) {
+			name: "this"
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button1"
+				"text": "Log out"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label1"
+				"text": "Sn. :::::::"
+			} )
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "tabbedPane1"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq l {space :::p, comp panel6:::p::p, space ::162:x}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp panel6:::p::p, space ::207:x}}"
+				} ) {
+					name: "panel1"
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {space :0:569:x}"
+						"$verticalGroup": "par l {space :0:214:x}"
+					} ) {
+						name: "panel6"
+						"border": new javax.swing.border.TitledBorder( "Product List" )
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Customers"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {space :0:747:x}"
+					"$verticalGroup": "par l {space :0:450:x}"
+				} ) {
+					name: "panel2"
+				}, new FormLayoutConstraints( null ) {
+					"title": "Reports"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {space :0:747:x}"
+					"$verticalGroup": "par l {space :0:450:x}"
+				} ) {
+					name: "panel3"
+				}, new FormLayoutConstraints( null ) {
+					"title": "Sales Management"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {space :0:747:x}"
+					"$verticalGroup": "par l {space :0:450:x}"
+				} ) {
+					name: "panel4"
+				}, new FormLayoutConstraints( null ) {
+					"title": "Product Management"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {space :0:747:x}"
+					"$verticalGroup": "par l {space :0:450:x}"
+				} ) {
+					name: "panel5"
+				}, new FormLayoutConstraints( null ) {
+					"title": "Category Management"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 785, 560 )
+		} )
+	}
+}

@@ -1,0 +1,39 @@
+JFDML JFormDesigner: "7.0.5.4.420" Java: "11.0.13" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq l {space :p:78:p, par t:::p {seq {comp lblError:::p:146:p, space ::118:x, comp btnLogin:::p:87:p}, seq {par l {comp label1::t:p:80:p, comp label2::l:p:80:p}, space :::p, par t:::p {comp txtPassword::::265:x, comp txtEmail::::265:x}}}, space ::139:x}}"
+			"$verticalGroup": "par l {seq l {space :p:151:p, par l:::p {comp label1:::p:32:p, seq {space :1:1:p, comp txtEmail:::::x}}, space u:::p, par b {comp label2::b:p:32:p, comp txtPassword::b:p:32:p}, space s:::p, par l {comp btnLogin:::p:46:p, seq t {comp lblError:::p:25:p, space :9:9:p}}, space ::147:x}}"
+		} ) {
+			name: "this"
+			"resizable": false
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label1"
+				"text": "Email:"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label2"
+				"text": "Password:"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "txtEmail"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "txtPassword"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnLogin"
+				"text": "Login"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblError"
+				"text": "Error:"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 5, 0 )
+			"size": new java.awt.Dimension( 570, 470 )
+		} )
+	}
+}
