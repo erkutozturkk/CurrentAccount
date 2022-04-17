@@ -3,6 +3,7 @@ package models;
 import props.Categories;
 import utils.DB;
 
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -105,4 +106,17 @@ public class CategoryImpl implements ICategory {
         }
         return categoriesTable;
     }
+
+    @Override
+    public DefaultComboBoxModel<String> comboBoxCategories() {
+        List<Categories> lsCategoriesCombo = new ArrayList<>();
+        DefaultComboBoxModel<String> comboModel = new DefaultComboBoxModel<>();
+        lsCategoriesCombo = categoryList();
+        for (Categories item : lsCategoriesCombo){
+
+            comboModel.addElement(String.valueOf(item.getCt_name()));
+        }
+        return comboModel;
+    }
+
 }

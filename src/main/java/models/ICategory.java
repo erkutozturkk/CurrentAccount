@@ -2,6 +2,7 @@ package models;
 
 import props.Categories;
 
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
@@ -11,4 +12,6 @@ public interface ICategory {
     int categoryDelete(int ktid);
     List<Categories> categoryList();
     DefaultTableModel categoriesTable();
+    DefaultComboBoxModel<String> comboBoxCategories();
+
 }

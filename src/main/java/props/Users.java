@@ -4,6 +4,32 @@ public class Users {
     private int uid;
     private String user_email;
     private String password;
+    private String user_name;
+    private String user_surname;
+
+    public Users(int uid, String user_email, String password, String user_name, String user_surname) {
+        this.uid = uid;
+        this.user_email = user_email;
+        this.password = password;
+        this.user_name = user_name;
+        this.user_surname = user_surname;
+    }
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
+
+    public String getUser_surname() {
+        return user_surname;
+    }
+
+    public void setUser_surname(String user_surname) {
+        this.user_surname = user_surname;
+    }
 
     public Users() {
     }

@@ -1,7 +1,7 @@
 package props;
 
 public class Categories {
-    private int ktid;
+    private int ctid;
     private String ct_name;
     private String ct_detail;
 
@@ -9,17 +9,21 @@ public class Categories {
     }
 
     public Categories(int ktid, String ct_name, String ct_detail) {
-        this.ktid = ktid;
+        this.ctid = ctid;
         this.ct_name = ct_name;
         this.ct_detail = ct_detail;
     }
 
+    public Categories(String ct_name) {
+        this.ct_name = ct_name;
+    }
+
     public int getKtid() {
-        return ktid;
+        return ctid;
     }
 
     public void setKtid(int ktid) {
-        this.ktid = ktid;
+        this.ctid = ktid;
     }
 
     public String getCt_name() {
@@ -41,7 +45,7 @@ public class Categories {
     @Override
     public String toString() {
         return "Categories{" +
-                "ktid=" + ktid +
+                "ctid=" + ctid +
                 ", ct_name='" + ct_name + '\'' +
                 ", ct_detail='" + ct_detail + '\'' +
                 '}';

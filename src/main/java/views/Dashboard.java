@@ -7,9 +7,12 @@ package views;
 import java.awt.event.*;
 
 import models.CategoryImpl;
+import models.CustomerImpl;
 import models.ProductImpl;
 import props.Categories;
+import props.Customers;
 import props.Products;
+import utils.Util;
 
 import java.awt.*;
 import java.util.Locale;
@@ -22,7 +25,8 @@ import javax.swing.border.*;
  */
 public class Dashboard extends JFrame {
    ProductImpl productImpl = new ProductImpl();
-    CategoryImpl cat = new CategoryImpl();
+   CategoryImpl cat = new CategoryImpl();
+   CustomerImpl cus = new CustomerImpl();
    int row = -1;
    int selectedId = 0;
     public static void main(String[] args) {
@@ -30,8 +34,11 @@ public class Dashboard extends JFrame {
     }
     public Dashboard() {
         initComponents();
+        tblCustomer.setModel(cus.model());
         fncCmbCategoryAdd();
+        cmbCategory.setModel(cat.comboBoxCategories());
         tblProductManagement.setModel(productImpl.productTable());
+
     }
     private void fncCmbCategoryAdd() {
         Categories categories = new Categories();
@@ -132,7 +139,7 @@ public class Dashboard extends JFrame {
         int stock = Integer.parseInt(txtStock.getText());
         String info = txtInfo.getText();
 
-        Products products = new Products(selectedId,productName,new Categories(categoryName),purchasePrice,salePrice,stock,info);
+       Products products = new Products();
         if (row!=-1){
             int answer=JOptionPane.showConfirmDialog(this,"Are you sure you want to update the product?","Update Window",JOptionPane.YES_OPTION);
             if (answer==0){
@@ -190,6 +197,110 @@ public class Dashboard extends JFrame {
             }
         }
     }
+    private Customers fncDataValid(){
+        String name=txtName.getText().trim();
+        String surname=txtSurname.getText().trim();
+        String phone=txtPhone.getText().trim();
+        String address=txtAddress.getText().trim();
+
+        if (name.equals("")){
+            lblError.setText("Name is Empty!!!");
+            txtName.requestFocus();
+        }else if (surname.equals("")){
+            lblError.setText("Surname is Empty!!!");
+            txtSurname.requestFocus();
+        }else if (phone.equals("")){ //boşşa sıfırsa
+            lblError.setText("Phone is Empty!!!");
+            txtPhone.requestFocus();//imleç otomatik olarak passwworde gelicek
+        }
+        else if (address.equals("")){ //boşşa sıfırsa
+            lblError.setText("Adress is Empty!!!");
+            txtAddress.requestFocus();//imleç otomatik olarak passwworde gelicek
+        }else {
+            lblError.setText("");
+            Customers c = new Customers(0,name,surname,phone,address);
+            return c;
+        }
+        return null; //olumsuz halinde
+
+    }
+
+    private void btnCustomerAddClick(ActionEvent e) {
+        Customers c = fncDataValid();
+        if(c!=null){
+            int status = cus.customerInsert(c);
+            if (status>0){
+                System.out.println("Ekleme basarili");
+                txtName.setText("");
+                txtSurname.setText("");
+                txtPhone.setText("");
+                txtAddress.setText("");
+                tblCustomer.setModel(cus.model() );
+            }
+            else {
+                if (status == -1){
+                    lblError.setText("E-mail or Phone have already used");
+                }
+                else {
+                    lblError.setText("Insert Error");
+                }
+            }
+        }
+    }
+
+    void rowVal(){
+        row = tblCustomer.getSelectedRow();
+        String name = (String) tblCustomer.getValueAt(row, 1);
+        String surname = (String) tblCustomer.getValueAt(row, 2);
+        String phone = (String) tblCustomer.getValueAt(row, 3);
+        String address = (String) tblCustomer.getValueAt(row, 4);
+
+        txtName.setText(name);
+        txtSurname.setText(surname);
+        txtPhone.setText(phone);
+        txtAddress.setText(address);
+    }
+    private void tblCustomerMouseClicked(MouseEvent e) {
+        rowVal();
+    }
+
+    private void tblCustomerKeyReleased(KeyEvent e) {
+        rowVal();
+    }
+    int cid = 0;
+    int column = 0;
+    private void btnCustomerUpdateClick(ActionEvent e) {
+        Customers c = fncDataValid();
+        if(row != -1 ) {
+            row = tblCustomer.getSelectedRow();
+            cid = Integer.valueOf(tblCustomer.getModel().getValueAt(row,column).toString());
+            int answer = JOptionPane.showConfirmDialog(this, "Guncellemek istediginizden emin misniz?", "Guncelleme islemi", JOptionPane.YES_NO_OPTION);
+            if (answer == 0) {
+                cus.customerUpdate(c,cid);
+                tblCustomer.setModel(cus.model());
+                row = -1;
+            }
+        }else{
+            JOptionPane.showMessageDialog(this, "Lutfen secim yapiniz.");
+        }
+    }
+
+    private void btnCustomerDeleteClick(ActionEvent e) {
+        if(row != -1 ) {
+            row = tblCustomer.getSelectedRow();
+            cid = Integer.valueOf(tblCustomer.getModel().getValueAt(row,column).toString());
+            int answer = JOptionPane.showConfirmDialog(this, "Silmek istediginizden emin miisniz?", "Silme islemi", JOptionPane.YES_NO_OPTION);
+            if(answer==0){
+                cus.customerDelete(cid);
+                tblCustomer.setModel(cus.model());
+                row = -1;
+            }
+        } else{
+            JOptionPane.showMessageDialog(this, "Lutfen secim yapiniz.");
+        }
+    }
+
+
 
 
 
@@ -206,16 +317,17 @@ public class Dashboard extends JFrame {
         tblCustomer = new JTable();
         panel18 = new JPanel();
         label11 = new JLabel();
-        txtProductName2 = new JTextField();
+        txtName = new JTextField();
         label13 = new JLabel();
-        txtPurchasePrice2 = new JTextField();
+        txtAddress = new JTextField();
         label15 = new JLabel();
-        txtStok2 = new JTextField();
+        txtSurname = new JTextField();
         label16 = new JLabel();
-        txtDetails2 = new JTextField();
+        txtPhone = new JTextField();
         btnCustomerDelete = new JButton();
         btnCustomerUpdate = new JButton();
         btnCustomerAdd = new JButton();
+        lblError = new JLabel();
         panel7 = new JPanel();
         label2 = new JLabel();
         radioButton1 = new JRadioButton();
@@ -242,7 +354,7 @@ public class Dashboard extends JFrame {
         label12 = new JLabel();
         button3 = new JButton();
         scrollPane5 = new JScrollPane();
-        tblProduct = new JTable();
+        tblOrderProducts = new JTable();
         label14 = new JLabel();
         label17 = new JLabel();
         txtProduct = new JTextField();
@@ -251,7 +363,7 @@ public class Dashboard extends JFrame {
         txtAmount = new JTextField();
         btnComplete = new JButton();
         scrollPane6 = new JScrollPane();
-        table4 = new JTable();
+        tblOrderCustomers = new JTable();
         txtCustomerSearch = new JTextField();
         label20 = new JLabel();
         panel3 = new JPanel();
@@ -310,6 +422,20 @@ public class Dashboard extends JFrame {
 
                     //======== scrollPane4 ========
                     {
+
+                        //---- tblCustomer ----
+                        tblCustomer.addMouseListener(new MouseAdapter() {
+                            @Override
+                            public void mouseClicked(MouseEvent e) {
+                                tblCustomerMouseClicked(e);
+                            }
+                        });
+                        tblCustomer.addKeyListener(new KeyAdapter() {
+                            @Override
+                            public void keyReleased(KeyEvent e) {
+                                tblCustomerKeyReleased(e);
+                            }
+                        });
                         scrollPane4.setViewportView(tblCustomer);
                     }
 
@@ -325,9 +451,8 @@ public class Dashboard extends JFrame {
                     panel17Layout.setVerticalGroup(
                         panel17Layout.createParallelGroup()
                             .addGroup(panel17Layout.createSequentialGroup()
-                                .addContainerGap()
                                 .addComponent(scrollPane4, GroupLayout.PREFERRED_SIZE, 146, GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(0, 12, Short.MAX_VALUE))
                     );
                 }
 
@@ -349,12 +474,18 @@ public class Dashboard extends JFrame {
 
                     //---- btnCustomerDelete ----
                     btnCustomerDelete.setText("Delete");
+                    btnCustomerDelete.addActionListener(e -> btnCustomerDeleteClick(e));
 
                     //---- btnCustomerUpdate ----
                     btnCustomerUpdate.setText("Update");
+                    btnCustomerUpdate.addActionListener(e -> btnCustomerUpdateClick(e));
 
                     //---- btnCustomerAdd ----
                     btnCustomerAdd.setText("Add");
+                    btnCustomerAdd.addActionListener(e -> btnCustomerAddClick(e));
+
+                    //---- lblError ----
+                    lblError.setText("text");
 
                     GroupLayout panel18Layout = new GroupLayout(panel18);
                     panel18.setLayout(panel18Layout);
@@ -369,16 +500,16 @@ public class Dashboard extends JFrame {
                                 .addGroup(panel18Layout.createParallelGroup()
                                     .addGroup(panel18Layout.createSequentialGroup()
                                         .addGroup(panel18Layout.createParallelGroup()
-                                            .addComponent(txtProductName2, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtPurchasePrice2))
+                                            .addComponent(txtName, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txtAddress))
                                         .addGap(33, 33, 33)
                                         .addGroup(panel18Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                             .addComponent(label15, GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
                                             .addComponent(label16, GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE))
                                         .addGap(18, 18, 18)
                                         .addGroup(panel18Layout.createParallelGroup()
-                                            .addComponent(txtStok2, GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
-                                            .addComponent(txtDetails2, GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)))
+                                            .addComponent(txtSurname, GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
+                                            .addComponent(txtPhone, GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)))
                                     .addGroup(panel18Layout.createSequentialGroup()
                                         .addGap(90, 90, 90)
                                         .addComponent(btnCustomerAdd)
@@ -388,6 +519,10 @@ public class Dashboard extends JFrame {
                                         .addComponent(btnCustomerDelete)
                                         .addGap(0, 202, Short.MAX_VALUE)))
                                 .addContainerGap())
+                            .addGroup(panel18Layout.createSequentialGroup()
+                                .addGap(28, 28, 28)
+                                .addComponent(lblError, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(557, Short.MAX_VALUE))
                     );
                     panel18Layout.setVerticalGroup(
                         panel18Layout.createParallelGroup()
@@ -396,27 +531,29 @@ public class Dashboard extends JFrame {
                                 .addGroup(panel18Layout.createParallelGroup()
                                     .addGroup(panel18Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(label11)
-                                        .addComponent(txtProductName2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(txtName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                     .addGroup(panel18Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(label15)
-                                        .addComponent(txtStok2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(txtSurname, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
                                 .addGroup(panel18Layout.createParallelGroup()
                                     .addGroup(panel18Layout.createSequentialGroup()
                                         .addGap(18, 18, 18)
                                         .addGroup(panel18Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                             .addComponent(label16)
-                                            .addComponent(txtDetails2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(txtPhone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
                                     .addGroup(panel18Layout.createSequentialGroup()
                                         .addGap(31, 31, 31)
                                         .addGroup(panel18Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                             .addComponent(label13)
-                                            .addComponent(txtPurchasePrice2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
+                                            .addComponent(txtAddress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
                                 .addGap(30, 30, 30)
                                 .addGroup(panel18Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(btnCustomerAdd)
                                     .addComponent(btnCustomerUpdate)
                                     .addComponent(btnCustomerDelete))
-                                .addContainerGap(59, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addComponent(lblError)
+                                .addContainerGap(25, Short.MAX_VALUE))
                     );
                 }
 
@@ -638,7 +775,7 @@ public class Dashboard extends JFrame {
 
                     //======== scrollPane5 ========
                     {
-                        scrollPane5.setViewportView(tblProduct);
+                        scrollPane5.setViewportView(tblOrderProducts);
                     }
 
                     //---- label14 ----
@@ -658,7 +795,7 @@ public class Dashboard extends JFrame {
 
                     //======== scrollPane6 ========
                     {
-                        scrollPane6.setViewportView(table4);
+                        scrollPane6.setViewportView(tblOrderCustomers);
                     }
 
                     //---- label20 ----
@@ -1103,16 +1240,17 @@ public class Dashboard extends JFrame {
     private JTable tblCustomer;
     private JPanel panel18;
     private JLabel label11;
-    private JTextField txtProductName2;
+    private JTextField txtName;
     private JLabel label13;
-    private JTextField txtPurchasePrice2;
+    private JTextField txtAddress;
     private JLabel label15;
-    private JTextField txtStok2;
+    private JTextField txtSurname;
     private JLabel label16;
-    private JTextField txtDetails2;
+    private JTextField txtPhone;
     private JButton btnCustomerDelete;
     private JButton btnCustomerUpdate;
     private JButton btnCustomerAdd;
+    private JLabel lblError;
     private JPanel panel7;
     private JLabel label2;
     private JRadioButton radioButton1;
@@ -1139,7 +1277,7 @@ public class Dashboard extends JFrame {
     private JLabel label12;
     private JButton button3;
     private JScrollPane scrollPane5;
-    private JTable tblProduct;
+    private JTable tblOrderProducts;
     private JLabel label14;
     private JLabel label17;
     private JTextField txtProduct;
@@ -1148,7 +1286,7 @@ public class Dashboard extends JFrame {
     private JTextField txtAmount;
     private JButton btnComplete;
     private JScrollPane scrollPane6;
-    private JTable table4;
+    private JTable tblOrderCustomers;
     private JTextField txtCustomerSearch;
     private JLabel label20;
     private JPanel panel3;

@@ -19,6 +19,13 @@ public class Customers {
         this.phone = phone;
         this.address = address;
     }
+    public Customers(int cid, String name, String surname, String phone, String address) {
+        this.cid = cid;
+        this.name = name;
+        this.surname = surname;
+        this.phone = phone;
+        this.address = address;
+    }
 
     public int getCid() {
         return cid;

@@ -8,6 +8,26 @@ public class Products {
     private int sale_price;
     private int stock;
     private String info;
+    private Categories categories;
+
+    public Products(int pid, int ctid, String product_name, int purchase_price, int sale_price, int stock, String info, Categories categories) {
+        this.pid = pid;
+        this.ctid = ctid;
+        this.product_name = product_name;
+        this.purchase_price = purchase_price;
+        this.sale_price = sale_price;
+        this.stock = stock;
+        this.info = info;
+        this.categories = categories;
+    }
+
+    public Categories getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Categories categories) {
+        this.categories = categories;
+    }
 
     public Products() {
     }
