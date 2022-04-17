@@ -252,11 +252,13 @@ public class Dashboard extends JFrame {
         row = tblCustomer.getSelectedRow();
         String name = (String) tblCustomer.getValueAt(row, 1);
         String surname = (String) tblCustomer.getValueAt(row, 2);
-        String phone = (String) tblCustomer.getValueAt(row, 3);
-        String address = (String) tblCustomer.getValueAt(row, 4);
+        String email = (String) tblCustomer.getValueAt(row, 3);
+        String phone = (String) tblCustomer.getValueAt(row, 4);
+        String address = (String) tblCustomer.getValueAt(row, 5);
 
         txtName.setText(name);
         txtSurname.setText(surname);
+        txtEmail.setText(email);
         txtPhone.setText(phone);
         txtAddress.setText(address);
     }
@@ -328,6 +330,8 @@ public class Dashboard extends JFrame {
         btnCustomerUpdate = new JButton();
         btnCustomerAdd = new JButton();
         lblError = new JLabel();
+        label21 = new JLabel();
+        txtEmail = new JTextField();
         panel7 = new JPanel();
         label2 = new JLabel();
         radioButton1 = new JRadioButton();
@@ -487,42 +491,51 @@ public class Dashboard extends JFrame {
                     //---- lblError ----
                     lblError.setText("text");
 
+                    //---- label21 ----
+                    label21.setText("E-mail");
+
                     GroupLayout panel18Layout = new GroupLayout(panel18);
                     panel18.setLayout(panel18Layout);
                     panel18Layout.setHorizontalGroup(
                         panel18Layout.createParallelGroup()
                             .addGroup(panel18Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(panel18Layout.createParallelGroup()
-                                    .addComponent(label11, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(label13, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
                                 .addGroup(panel18Layout.createParallelGroup()
                                     .addGroup(panel18Layout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(lblError, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 573, Short.MAX_VALUE))
+                                    .addGroup(panel18Layout.createSequentialGroup()
                                         .addGroup(panel18Layout.createParallelGroup()
-                                            .addComponent(txtName, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtAddress))
+                                            .addGroup(panel18Layout.createSequentialGroup()
+                                                .addComponent(label13, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(txtAddress, GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE))
+                                            .addGroup(panel18Layout.createSequentialGroup()
+                                                .addComponent(label11, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(txtName, GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE))
+                                            .addGroup(panel18Layout.createSequentialGroup()
+                                                .addComponent(label21, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(txtEmail, GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)))
                                         .addGap(33, 33, 33)
-                                        .addGroup(panel18Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(label15, GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
-                                            .addComponent(label16, GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE))
+                                        .addGroup(panel18Layout.createParallelGroup()
+                                            .addComponent(label16, GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+                                            .addGroup(panel18Layout.createSequentialGroup()
+                                                .addGroup(panel18Layout.createParallelGroup()
+                                                    .addComponent(label15, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(btnCustomerAdd))
+                                                .addGap(0, 17, Short.MAX_VALUE)))
                                         .addGap(18, 18, 18)
                                         .addGroup(panel18Layout.createParallelGroup()
-                                            .addComponent(txtSurname, GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
-                                            .addComponent(txtPhone, GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)))
-                                    .addGroup(panel18Layout.createSequentialGroup()
-                                        .addGap(90, 90, 90)
-                                        .addComponent(btnCustomerAdd)
-                                        .addGap(48, 48, 48)
-                                        .addComponent(btnCustomerUpdate)
-                                        .addGap(40, 40, 40)
-                                        .addComponent(btnCustomerDelete)
-                                        .addGap(0, 202, Short.MAX_VALUE)))
+                                            .addGroup(panel18Layout.createSequentialGroup()
+                                                .addGap(16, 16, 16)
+                                                .addComponent(btnCustomerUpdate)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                                                .addComponent(btnCustomerDelete))
+                                            .addComponent(txtSurname, GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+                                            .addComponent(txtPhone, GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE))))
                                 .addContainerGap())
-                            .addGroup(panel18Layout.createSequentialGroup()
-                                .addGap(28, 28, 28)
-                                .addComponent(lblError, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(557, Short.MAX_VALUE))
                     );
                     panel18Layout.setVerticalGroup(
                         panel18Layout.createParallelGroup()
@@ -535,25 +548,23 @@ public class Dashboard extends JFrame {
                                     .addGroup(panel18Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(label15)
                                         .addComponent(txtSurname, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                .addGap(18, 18, 18)
                                 .addGroup(panel18Layout.createParallelGroup()
-                                    .addGroup(panel18Layout.createSequentialGroup()
-                                        .addGap(18, 18, 18)
-                                        .addGroup(panel18Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                            .addComponent(label16)
-                                            .addComponent(txtPhone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(panel18Layout.createSequentialGroup()
-                                        .addGap(31, 31, 31)
-                                        .addGroup(panel18Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                            .addComponent(label13)
-                                            .addComponent(txtAddress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
-                                .addGap(30, 30, 30)
-                                .addGroup(panel18Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addGroup(panel18Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(label16, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtPhone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtEmail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(label21))
+                                .addGap(18, 18, 18)
+                                .addGroup(panel18Layout.createParallelGroup()
                                     .addComponent(btnCustomerAdd)
                                     .addComponent(btnCustomerUpdate)
-                                    .addComponent(btnCustomerDelete))
-                                .addGap(18, 18, 18)
+                                    .addComponent(btnCustomerDelete)
+                                    .addComponent(label13)
+                                    .addComponent(txtAddress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                                 .addComponent(lblError)
-                                .addContainerGap(25, Short.MAX_VALUE))
+                                .addGap(19, 19, 19))
                     );
                 }
 
@@ -1206,7 +1217,7 @@ public class Dashboard extends JFrame {
                 .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
                     .addGap(15, 15, 15)
                     .addComponent(label1)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 610, Short.MAX_VALUE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 605, Short.MAX_VALUE)
                     .addComponent(button1)
                     .addGap(30, 30, 30))
                 .addGroup(contentPaneLayout.createSequentialGroup()
@@ -1251,6 +1262,8 @@ public class Dashboard extends JFrame {
     private JButton btnCustomerUpdate;
     private JButton btnCustomerAdd;
     private JLabel lblError;
+    private JLabel label21;
+    private JTextField txtEmail;
     private JPanel panel7;
     private JLabel label2;
     private JRadioButton radioButton1;
