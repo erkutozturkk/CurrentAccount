@@ -4,6 +4,10 @@
 
 package views;
 
+import java.awt.event.*;
+import models.UserImpl;
+import utils.Util;
+
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.GroupLayout;
@@ -12,8 +16,53 @@ import javax.swing.GroupLayout;
  * @author unknown
  */
 public class Login extends JFrame {
+    UserImpl user = new UserImpl();
+
+    public static void main(String[] args) {
+        new Login().setVisible(true);
+    }
     public Login() {
         initComponents();
+    }
+
+    public void usersLogin() {
+        String user_email = txtEmail.getText().trim().toLowerCase();
+        String password = String.valueOf(txtPassword.getPassword());
+        if (user_email.equals("")) {
+            txtEmail.requestFocus();
+            lblError.setText("Please Entry E-Mail!");
+        }else if (!Util.isValidEmailAddress(user_email)) {
+            lblError.setText("E-Mail Format Error!");
+        }else if (password.length() == 0) {
+            lblError.setText("Please Entry Password");
+            txtPassword.requestFocus();
+        }else {
+            lblError.setText("");
+            boolean status = user.usersLogin(user_email, password);
+            if (status) {
+                Dashboard dashboard = new Dashboard();
+                dashboard.setVisible(true);
+                dispose();
+            }else {
+                lblError.setText("E-Mail or Password False!");
+            }
+        }
+    }
+
+    private void btnUsersLogin(ActionEvent e) {
+        usersLogin();
+    }
+
+    private void txtEmailKeyReleased(KeyEvent e) {
+        if(e.getKeyCode()==KeyEvent.VK_ENTER){
+            usersLogin();
+        }
+    }
+
+    private void txtPasswordKeyReleased(KeyEvent e) {
+        if(e.getKeyCode()==KeyEvent.VK_ENTER){
+            usersLogin();
+        }
     }
 
     private void initComponents() {
@@ -21,7 +70,7 @@ public class Login extends JFrame {
         label1 = new JLabel();
         label2 = new JLabel();
         txtEmail = new JTextField();
-        txtPassword = new JTextField();
+        txtPassword = new JPasswordField();
         btnLogin = new JButton();
         lblError = new JLabel();
 
@@ -35,8 +84,25 @@ public class Login extends JFrame {
         //---- label2 ----
         label2.setText("Password:");
 
+        //---- txtEmail ----
+        txtEmail.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                txtEmailKeyReleased(e);
+            }
+        });
+
+        //---- txtPassword ----
+        txtPassword.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                txtPasswordKeyReleased(e);
+            }
+        });
+
         //---- btnLogin ----
         btnLogin.setText("Login");
+        btnLogin.addActionListener(e -> btnUsersLogin(e));
 
         //---- lblError ----
         lblError.setText("Error:");
@@ -92,7 +158,7 @@ public class Login extends JFrame {
     private JLabel label1;
     private JLabel label2;
     private JTextField txtEmail;
-    private JTextField txtPassword;
+    private JPasswordField txtPassword;
     private JButton btnLogin;
     private JLabel lblError;
     // JFormDesigner - End of variables declaration  //GEN-END:variables

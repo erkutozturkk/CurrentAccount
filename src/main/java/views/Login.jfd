@@ -19,13 +19,16 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JTextField" ) {
 				name: "txtEmail"
+				addEvent( new FormEvent( "java.awt.event.KeyListener", "keyReleased", "txtEmailKeyReleased", true ) )
 			} )
-			add( new FormComponent( "javax.swing.JTextField" ) {
+			add( new FormComponent( "javax.swing.JPasswordField" ) {
 				name: "txtPassword"
+				addEvent( new FormEvent( "java.awt.event.KeyListener", "keyReleased", "txtPasswordKeyReleased", true ) )
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "btnLogin"
 				"text": "Login"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnUsersLogin", true ) )
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "lblError"
