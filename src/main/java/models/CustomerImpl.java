@@ -20,8 +20,8 @@ public class CustomerImpl implements ICustomer{
             PreparedStatement pre = db.connect().prepareStatement(sql);
             pre.setString(1,customer.getName());
             pre.setString(2,customer.getSurname());
-            pre.setString(3,customer.getEmail());
             pre.setString(4,customer.getPhone());
+            pre.setString(3,customer.getEmail());
             pre.setString(5,customer.getAddress());
             status = pre.executeUpdate();
 
@@ -42,13 +42,13 @@ public class CustomerImpl implements ICustomer{
         md.addColumn("cId");
         md.addColumn("Name");
         md.addColumn("Surname");
-        md.addColumn("Email");
         md.addColumn("Phone");
+        md.addColumn("Email");
         md.addColumn("Address");
 
         cust = customerList();
         for (Customers item : cust) {
-            Object[] row = {item.getCid(),item.getName(), item.getSurname(), item.getEmail(), item.getPhone(), item.getAddress()};
+            Object[] row = {item.getCid(),item.getName(), item.getSurname(), item.getPhone(), item.getEmail() ,item.getAddress()};
             md.addRow(row);
         }
 
@@ -84,8 +84,8 @@ public class CustomerImpl implements ICustomer{
             PreparedStatement pre = db.connect().prepareStatement(sql);
             pre.setString(1,customer.getName());
             pre.setString(2,customer.getSurname());
-            pre.setString(3,customer.getEmail());
             pre.setString(4,customer.getPhone());
+            pre.setString(3,customer.getEmail());
             pre.setString(5,customer.getAddress());
             pre.setInt(6,cId);
             status = pre.executeUpdate();
@@ -113,11 +113,11 @@ public class CustomerImpl implements ICustomer{
                 int cid = rs.getInt("cid");
                 String name = rs.getString("name");
                 String surname = rs.getString("surname");
-                String email = rs.getString("email");
-                String phone = rs.getString("phone");
+                String email = rs.getString("phone");
+                String phone = rs.getString("email");
                 String address = rs.getString("address");
 
-                Customers c = new Customers(cid,name,surname,email,phone,address);
+                Customers c = new Customers(cid,name,surname,phone,email,address);
                 cust.add(c);
             }
         }catch (Exception ex){
