@@ -4,11 +4,12 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq l {space :p:78:p, par t:::p {seq {comp lblError:::p:146:p, space ::118:x, comp btnLogin:::p:87:p}, seq {par l {comp label1::t:p:80:p, comp label2::l:p:80:p}, space :::p, par t:::p {comp txtPassword::::265:x, comp txtEmail::::265:x}}}, space ::139:x}}"
-			"$verticalGroup": "par l {seq l {space :p:151:p, par l:::p {comp label1:::p:32:p, seq {space :1:1:p, comp txtEmail:::::x}}, space u:::p, par b {comp label2::b:p:32:p, comp txtPassword::b:p:32:p}, space s:::p, par l {comp btnLogin:::p:46:p, seq t {comp lblError:::p:25:p, space :9:9:p}}, space ::147:x}}"
+			"$horizontalGroup": "par l {seq l {space :p:78:p, par t {par t:::p {seq {par l {comp label1::t:p:80:p, comp label2::l:p:80:p}, space :::p, par t:::p {comp txtPassword::::265:x, comp txtEmail::::265:x}}, seq l {comp lblError:::p:146:p, space :p:83:p, comp btnLogin::::122:x}}, par l:::p {comp button1::t:::x, comp button2::t:::x}}, space ::139:x}}"
+			"$verticalGroup": "par l {seq l {space :p:151:p, par l:::p {comp label1:::p:32:p, seq {space :1:1:p, comp txtEmail:::::x}}, space u:::p, par b {comp label2::b:p:32:p, comp txtPassword::b:p:32:p}, par l {seq {space :p:30:p, comp lblError:::p:25:p}, seq l {space s:::p, comp btnLogin:::p:46:p}}, space :p:26:p, comp button1:::p:20:p, space s:::p, comp button2:::p:20:p, space ::62:x}}"
 		} ) {
 			name: "this"
 			"resizable": false
+			"defaultCloseOperation": 2
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label1"
 				"text": "Email:"
@@ -33,6 +34,16 @@ new FormModel {
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "lblError"
 				"text": "Error:"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button1"
+				"text": "SINGIN"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnSignInClick", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button2"
+				"text": "Forgot Password"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnForgotPasswordClick", true ) )
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 5, 0 )
