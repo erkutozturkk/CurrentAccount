@@ -8,6 +8,7 @@ import java.awt.event.*;
 
 import models.CategoryImpl;
 import models.CustomerImpl;
+import models.OrderImpl;
 import models.ProductImpl;
 import props.Categories;
 import props.Customers;
@@ -27,22 +28,23 @@ public class Dashboard extends JFrame {
    ProductImpl productImpl = new ProductImpl();
    CategoryImpl cat = new CategoryImpl();
    CustomerImpl cus = new CustomerImpl();
+   OrderImpl order = new OrderImpl();
    int row = -1;
    int selectedId = 0;
+   int pid = 0;
     public static void main(String[] args) {
         new Dashboard().setVisible(true);
     }
     public Dashboard() {
         initComponents();
         tblCustomer.setModel(cus.model());
-        fncCmbCategoryAdd();
         cmbCategory.setModel(cat.comboBoxCategories());
+        cmbSalesCategory.setModel(cat.comboBoxCategories());
         tblProductManagement.setModel(productImpl.productTable());
+        tblCategoryList.setModel(cat.categoriesTable());
+        tblOrderCustomers.setModel(order.orderCustomersTable(null));
+        tblOrderProducts.setModel(productImpl.productTable());
 
-    }
-    private void fncCmbCategoryAdd() {
-        Categories categories = new Categories();
-        cmbCategory.addItem(categories.getCt_name());
     }
 
     public Products fncProductDataValid() {
@@ -66,12 +68,13 @@ public class Dashboard extends JFrame {
                 lblProductError.setText("Info Empty!");
             }else {
                 String productName = txtProductName.getText().toLowerCase(Locale.ROOT).trim();
+                int ctid = cmbCategory.getSelectedIndex()+1;
                 int purchasePrice = Integer.parseInt(txtPurchasePrice.getText().toLowerCase(Locale.ROOT).trim());
                 int salePrice = Integer.parseInt(txtSalePrice.getText().toLowerCase(Locale.ROOT).trim());
                 int stock = Integer.parseInt(txtStock.getText().toLowerCase(Locale.ROOT).trim());
                 String info = txtInfo.getText().toLowerCase(Locale.ROOT).trim();
 
-                Products products = new Products(0,0,productName,purchasePrice,salePrice,stock,info);
+                Products products = new Products(0,ctid,productName,purchasePrice,salePrice,stock,info);
                 return products;
             }
         }catch (Exception ex) {
@@ -91,7 +94,6 @@ public class Dashboard extends JFrame {
     public void rowSelectProduct() {
         int column = 0;
         row = tblProductManagement.getSelectedRow();
-        selectedId = (int) tblProductManagement.getValueAt(row,column);
 
         int pid = Integer.parseInt(String.valueOf(tblProductManagement.getValueAt(row,0)));
         String categoryName = String.valueOf(tblProductManagement.getValueAt(row,1));
@@ -102,7 +104,7 @@ public class Dashboard extends JFrame {
         String info = String.valueOf(tblProductManagement.getValueAt(row,6));
 
         txtProductName.setText(productName);
-        cmbCategory.getSelectedItem();
+        cmbCategory.setSelectedItem(categoryName);
         txtPurchasePrice.setText(String.valueOf(purchasePrice));
         txtSalePrice.setText(String.valueOf(salePrice));
         txtStock.setText(String.valueOf(stock));
@@ -132,20 +134,14 @@ public class Dashboard extends JFrame {
     }
 
     private void btnUpdateProduct(ActionEvent e) {
-        String productName = txtProductName.getText();
-        String categoryName = (String) cmbCategory.getSelectedItem();
-        int purchasePrice = Integer.parseInt(txtPurchasePrice.getText());
-        int salePrice = Integer.parseInt(txtSalePrice.getText());
-        int stock = Integer.parseInt(txtStock.getText());
-        String info = txtInfo.getText();
-
-       Products products = new Products();
+       Products products = fncProductDataValid();
         if (row!=-1){
+            row = tblProductManagement.getSelectedRow();
             int answer=JOptionPane.showConfirmDialog(this,"Are you sure you want to update the product?","Update Window",JOptionPane.YES_OPTION);
+            pid = Integer.parseInt(String.valueOf(tblProductManagement.getValueAt(row,0)));
             if (answer==0){
-                productImpl.productUpdate(products);
+                productImpl.productUpdate(products,pid);
                 tblProductManagement.setModel(productImpl.productTable());
-                textProductClear();
                 row=-1;
             }
         }else{
@@ -153,20 +149,22 @@ public class Dashboard extends JFrame {
         }
     }
 
-    private void btnDeleteProduct(ActionEvent e) {
+    private void btnDeleteProductClick(ActionEvent e) {
         if (row != -1) {
             int answer=JOptionPane.showConfirmDialog(this,"Are you sure you want to delete the product?","Delete Window",JOptionPane.YES_OPTION);
-
+            row = tblProductManagement.getSelectedRow();
+            pid = Integer.valueOf(tblProductManagement.getModel().getValueAt(row,column).toString());
             if (answer==0) {
-                productImpl.productDelete(selectedId);
+                productImpl.productDelete(pid);
                 tblProductManagement.setModel(productImpl.productTable());
-                textProductClear();
                 row = -1;
             }
         }else {
             JOptionPane.showMessageDialog(this,"Please choose.");
         }
     }
+
+    //---------------CATEGORY-------------
     private Categories fncCategoryDataValid(){
         String categoryName = txtCategoryName.getText().trim();
         String caegoryDefinition = txtDefinition.getText().trim();
@@ -184,6 +182,15 @@ public class Dashboard extends JFrame {
         }
         return null;
     }
+    void rowCategorySelect(){
+        row = tblCategoryList.getSelectedRow();
+        String categoryName = (String) tblCategoryList.getValueAt(row, 0);
+        String categoryDefinition = (String) tblCategoryList.getValueAt(row, 1);
+
+        txtCategoryName.setText(categoryName);
+        txtDefinition.setText(categoryDefinition);
+    }
+
     private void btnCategoryAddClick(ActionEvent e) {
         Categories c = fncCategoryDataValid();
         if (c != null){
@@ -197,10 +204,49 @@ public class Dashboard extends JFrame {
             }
         }
     }
+    private void btnCategoryUpdateClick(ActionEvent e) {
+        Categories categories = fncCategoryDataValid();
+        int selectedId = tblCategoryList.getSelectedRow() + 1;
+        if (row!=-1){
+            int answer=JOptionPane.showConfirmDialog(this,"Are you sure you want to update the category?","Update Window",JOptionPane.YES_OPTION);
+            if (answer==0){
+                cat.categoryUpdate(categories,selectedId);
+                tblCategoryList.setModel(cat.categoriesTable());
+                txtCategoryName.setText("");
+                txtDefinition.setText("");
+                row=-1;
+            }
+        }else{
+            JOptionPane.showMessageDialog(this,"Please choose.");
+        }
+    }
+
+    private void btnCategoryDeleteClick(ActionEvent e) {
+        if (row != -1) {
+            int answer=JOptionPane.showConfirmDialog(this,"Are you sure you want to delete the category?","Delete Window",JOptionPane.YES_OPTION);
+            if (answer==0) {
+                int selectedId = tblCategoryList.getSelectedRow() + 1;
+                cat.categoryDelete(selectedId);
+                tblCategoryList.setModel(cat.categoriesTable());
+                txtCategoryName.setText("");
+                txtDefinition.setText("");
+                row = -1;
+            }
+        }else {
+            JOptionPane.showMessageDialog(this,"Please choose.");
+        }
+    }
+    private void tblCategoryListMouseClicked(MouseEvent e) {
+        rowCategorySelect();
+    }
+    private void tblCategoryListKeyReleased(KeyEvent e) {
+        rowCategorySelect();
+    }
     private Customers fncDataValid(){
         String name=txtName.getText().trim();
         String surname=txtSurname.getText().trim();
         String phone=txtPhone.getText().trim();
+        String email=txtEmail.getText().trim();
         String address=txtAddress.getText().trim();
 
         if (name.equals("")){
@@ -212,13 +258,16 @@ public class Dashboard extends JFrame {
         }else if (phone.equals("")){ //boşşa sıfırsa
             lblError.setText("Phone is Empty!!!");
             txtPhone.requestFocus();//imleç otomatik olarak passwworde gelicek
+        }else if (email.equals("")){ //boşşa sıfırsa
+            lblError.setText("Email is Empty!!!");
+            txtEmail.requestFocus();//imleç otomatik olarak passwworde gelicek
         }
         else if (address.equals("")){ //boşşa sıfırsa
             lblError.setText("Adress is Empty!!!");
             txtAddress.requestFocus();//imleç otomatik olarak passwworde gelicek
         }else {
             lblError.setText("");
-            Customers c = new Customers(0,name,surname,phone,address);
+            Customers c = new Customers(0,name,surname,phone,email,address);
             return c;
         }
         return null; //olumsuz halinde
@@ -234,8 +283,10 @@ public class Dashboard extends JFrame {
                 txtName.setText("");
                 txtSurname.setText("");
                 txtPhone.setText("");
+                txtEmail.setText("");
                 txtAddress.setText("");
                 tblCustomer.setModel(cus.model() );
+                tblOrderCustomers.setModel(cus.model());
             }
             else {
                 if (status == -1){
@@ -252,14 +303,14 @@ public class Dashboard extends JFrame {
         row = tblCustomer.getSelectedRow();
         String name = (String) tblCustomer.getValueAt(row, 1);
         String surname = (String) tblCustomer.getValueAt(row, 2);
-        String email = (String) tblCustomer.getValueAt(row, 3);
-        String phone = (String) tblCustomer.getValueAt(row, 4);
+        String phone = (String) tblCustomer.getValueAt(row, 3);
+        String email = (String) tblCustomer.getValueAt(row, 4);
         String address = (String) tblCustomer.getValueAt(row, 5);
 
         txtName.setText(name);
         txtSurname.setText(surname);
-        txtEmail.setText(email);
         txtPhone.setText(phone);
+        txtEmail.setText(email);
         txtAddress.setText(address);
     }
     private void tblCustomerMouseClicked(MouseEvent e) {
@@ -280,6 +331,7 @@ public class Dashboard extends JFrame {
             if (answer == 0) {
                 cus.customerUpdate(c,cid);
                 tblCustomer.setModel(cus.model());
+                tblOrderCustomers.setModel(cus.model());
                 row = -1;
             }
         }else{
@@ -296,12 +348,17 @@ public class Dashboard extends JFrame {
                 cus.customerDelete(cid);
                 tblCustomer.setModel(cus.model());
                 row = -1;
+                tblOrderCustomers.setModel(cus.model());
             }
         } else{
             JOptionPane.showMessageDialog(this, "Lutfen secim yapiniz.");
         }
     }
 
+    private void txtCustomerSearchKeyReleased(KeyEvent e) {
+        String txtSearch = txtCustomerSearch.getText().trim();
+        tblOrderCustomers.setModel(order.orderCustomersTable(txtSearch));
+    }
 
 
 
@@ -354,7 +411,7 @@ public class Dashboard extends JFrame {
         spinner4 = new JSpinner();
         panel6 = new JPanel();
         panel12 = new JPanel();
-        cmbCategory2 = new JComboBox();
+        cmbSalesCategory = new JComboBox();
         label12 = new JLabel();
         button3 = new JButton();
         scrollPane5 = new JScrollPane();
@@ -492,50 +549,51 @@ public class Dashboard extends JFrame {
                     lblError.setText("text");
 
                     //---- label21 ----
-                    label21.setText("E-mail");
+                    label21.setText("Email");
 
                     GroupLayout panel18Layout = new GroupLayout(panel18);
                     panel18.setLayout(panel18Layout);
                     panel18Layout.setHorizontalGroup(
                         panel18Layout.createParallelGroup()
                             .addGroup(panel18Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(panel18Layout.createParallelGroup()
+                                    .addComponent(label11, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(label13, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
                                 .addGroup(panel18Layout.createParallelGroup()
                                     .addGroup(panel18Layout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addComponent(lblError, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 573, Short.MAX_VALUE))
+                                        .addGroup(panel18Layout.createParallelGroup()
+                                            .addComponent(txtAddress)
+                                            .addComponent(txtName, GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE))
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(panel18Layout.createParallelGroup()
+                                            .addComponent(label15, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(label16, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(panel18Layout.createParallelGroup()
+                                            .addComponent(txtSurname, GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
+                                            .addComponent(txtPhone, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)))
                                     .addGroup(panel18Layout.createSequentialGroup()
+                                        .addGap(90, 90, 90)
+                                        .addGroup(panel18Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                            .addComponent(label21)
+                                            .addComponent(btnCustomerAdd))
                                         .addGroup(panel18Layout.createParallelGroup()
                                             .addGroup(panel18Layout.createSequentialGroup()
-                                                .addComponent(label13, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(txtAddress, GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE))
-                                            .addGroup(panel18Layout.createSequentialGroup()
-                                                .addComponent(label11, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(txtName, GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE))
-                                            .addGroup(panel18Layout.createSequentialGroup()
-                                                .addComponent(label21, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(txtEmail, GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)))
-                                        .addGap(33, 33, 33)
-                                        .addGroup(panel18Layout.createParallelGroup()
-                                            .addComponent(label16, GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
-                                            .addGroup(panel18Layout.createSequentialGroup()
-                                                .addGroup(panel18Layout.createParallelGroup()
-                                                    .addComponent(label15, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
-                                                    .addComponent(btnCustomerAdd))
-                                                .addGap(0, 17, Short.MAX_VALUE)))
-                                        .addGap(18, 18, 18)
-                                        .addGroup(panel18Layout.createParallelGroup()
-                                            .addGroup(panel18Layout.createSequentialGroup()
-                                                .addGap(16, 16, 16)
+                                                .addGap(48, 48, 48)
                                                 .addComponent(btnCustomerUpdate)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                                                .addGap(40, 40, 40)
                                                 .addComponent(btnCustomerDelete))
-                                            .addComponent(txtSurname, GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
-                                            .addComponent(txtPhone, GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE))))
+                                            .addGroup(panel18Layout.createSequentialGroup()
+                                                .addGap(18, 18, 18)
+                                                .addComponent(txtEmail, GroupLayout.PREFERRED_SIZE, 209, GroupLayout.PREFERRED_SIZE)))
+                                        .addGap(0, 202, Short.MAX_VALUE)))
                                 .addContainerGap())
+                            .addGroup(panel18Layout.createSequentialGroup()
+                                .addGap(28, 28, 28)
+                                .addComponent(lblError, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(557, Short.MAX_VALUE))
                     );
                     panel18Layout.setVerticalGroup(
                         panel18Layout.createParallelGroup()
@@ -548,23 +606,24 @@ public class Dashboard extends JFrame {
                                     .addGroup(panel18Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(label15)
                                         .addComponent(txtSurname, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-                                .addGap(18, 18, 18)
-                                .addGroup(panel18Layout.createParallelGroup()
-                                    .addGroup(panel18Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(label16, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(txtPhone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(txtEmail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(label21))
-                                .addGap(18, 18, 18)
-                                .addGroup(panel18Layout.createParallelGroup()
+                                .addGap(5, 5, 5)
+                                .addGroup(panel18Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(label13)
+                                    .addComponent(txtAddress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(label16)
+                                    .addComponent(txtPhone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(panel18Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(label21)
+                                    .addComponent(txtEmail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addGap(22, 22, 22)
+                                .addGroup(panel18Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(btnCustomerAdd)
                                     .addComponent(btnCustomerUpdate)
-                                    .addComponent(btnCustomerDelete)
-                                    .addComponent(label13)
-                                    .addComponent(txtAddress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                                    .addComponent(btnCustomerDelete))
+                                .addGap(18, 18, 18)
                                 .addComponent(lblError)
-                                .addGap(19, 19, 19))
+                                .addContainerGap(17, Short.MAX_VALUE))
                     );
                 }
 
@@ -809,6 +868,14 @@ public class Dashboard extends JFrame {
                         scrollPane6.setViewportView(tblOrderCustomers);
                     }
 
+                    //---- txtCustomerSearch ----
+                    txtCustomerSearch.addKeyListener(new KeyAdapter() {
+                        @Override
+                        public void keyReleased(KeyEvent e) {
+                            txtCustomerSearchKeyReleased(e);
+                        }
+                    });
+
                     //---- label20 ----
                     label20.setText("Search:");
 
@@ -821,7 +888,7 @@ public class Dashboard extends JFrame {
                                 .addGroup(panel12Layout.createParallelGroup()
                                     .addGroup(panel12Layout.createSequentialGroup()
                                         .addGroup(panel12Layout.createParallelGroup()
-                                            .addComponent(cmbCategory2, GroupLayout.PREFERRED_SIZE, 211, GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(cmbSalesCategory, GroupLayout.PREFERRED_SIZE, 211, GroupLayout.PREFERRED_SIZE)
                                             .addComponent(label12, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                         .addGap(18, 18, 18)
                                         .addComponent(button3, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE)
@@ -863,7 +930,7 @@ public class Dashboard extends JFrame {
                                 .addGroup(panel12Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                     .addComponent(button3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(panel12Layout.createSequentialGroup()
-                                        .addComponent(cmbCategory2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(cmbSalesCategory, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(label12)))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
@@ -974,7 +1041,7 @@ public class Dashboard extends JFrame {
 
                     //---- btnDeleteProduct ----
                     btnDeleteProduct.setText("Delete");
-                    btnDeleteProduct.addActionListener(e -> btnDeleteProduct(e));
+                    btnDeleteProduct.addActionListener(e -> btnDeleteProductClick(e));
 
                     //---- btnUpdateProduct ----
                     btnUpdateProduct.setText("Update");
@@ -1095,6 +1162,20 @@ public class Dashboard extends JFrame {
 
                     //======== scrollPane3 ========
                     {
+
+                        //---- tblCategoryList ----
+                        tblCategoryList.addKeyListener(new KeyAdapter() {
+                            @Override
+                            public void keyReleased(KeyEvent e) {
+                                tblCategoryListKeyReleased(e);
+                            }
+                        });
+                        tblCategoryList.addMouseListener(new MouseAdapter() {
+                            @Override
+                            public void mouseClicked(MouseEvent e) {
+                                tblCategoryListMouseClicked(e);
+                            }
+                        });
                         scrollPane3.setViewportView(tblCategoryList);
                     }
 
@@ -1122,9 +1203,11 @@ public class Dashboard extends JFrame {
 
                     //---- btnUpdate2 ----
                     btnUpdate2.setText("Update");
+                    btnUpdate2.addActionListener(e -> btnCategoryUpdateClick(e));
 
                     //---- btnDelete ----
                     btnDelete.setText("Delete");
+                    btnDelete.addActionListener(e -> btnCategoryDeleteClick(e));
 
                     //---- btnCategoryAdd ----
                     btnCategoryAdd.setText("Add");
@@ -1217,7 +1300,7 @@ public class Dashboard extends JFrame {
                 .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
                     .addGap(15, 15, 15)
                     .addComponent(label1)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 605, Short.MAX_VALUE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 610, Short.MAX_VALUE)
                     .addComponent(button1)
                     .addGap(30, 30, 30))
                 .addGroup(contentPaneLayout.createSequentialGroup()
@@ -1286,7 +1369,7 @@ public class Dashboard extends JFrame {
     private JSpinner spinner4;
     private JPanel panel6;
     private JPanel panel12;
-    private JComboBox cmbCategory2;
+    private JComboBox cmbSalesCategory;
     private JLabel label12;
     private JButton button3;
     private JScrollPane scrollPane5;
