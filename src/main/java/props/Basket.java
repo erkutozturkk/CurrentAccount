@@ -9,6 +9,51 @@ public class Basket {
     private String date;
     private int amount;
     private int status;
+    private Customers customer;
+    private Products product;
+    private Categories category;
+
+    public Basket(){
+
+    }
+
+    public Customers getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customers customer) {
+        this.customer = customer;
+    }
+
+    public Products getProduct() {
+        return product;
+    }
+
+    public void setProduct(Products product) {
+        this.product = product;
+    }
+
+    public Categories getCategory() {
+        return category;
+    }
+
+    public void setCategory(Categories category) {
+        this.category = category;
+    }
+
+    public Basket(int bid, int cid, int pid, int ktid, String uuid, String date, int amount, int status, Customers customer, Products product, Categories category) {
+        this.bid = bid;
+        this.cid = cid;
+        this.pid = pid;
+        this.ktid = ktid;
+        this.uuid = uuid;
+        this.date = date;
+        this.amount = amount;
+        this.status = status;
+        this.customer = customer;
+        this.product = product;
+        this.category = category;
+    }
 
     public Basket(int bid, int cid, int pid, int ktid, String uuid, String date, int amount, int status) {
         this.bid = bid;

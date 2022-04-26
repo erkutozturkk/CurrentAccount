@@ -20,6 +20,9 @@ public class Products {
         this.info = info;
         this.categories = categories;
     }
+    public Products(String product_name) {
+        this.product_name = product_name;
+    }
 
     public Categories getCategories() {
         return categories;

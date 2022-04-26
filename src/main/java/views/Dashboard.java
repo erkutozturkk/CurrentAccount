@@ -6,18 +6,13 @@ package views;
 
 import java.awt.event.*;
 
-import models.CategoryImpl;
-import models.CustomerImpl;
-import models.OrderImpl;
-import models.ProductImpl;
+import models.*;
+import props.Basket;
 import props.Categories;
 import props.Customers;
 import props.Products;
-import utils.Util;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import javax.swing.*;
 import javax.swing.GroupLayout;
@@ -31,6 +26,7 @@ public class Dashboard extends JFrame {
    CategoryImpl cat = new CategoryImpl();
    CustomerImpl cus = new CustomerImpl();
    OrderImpl order = new OrderImpl();
+   BasketImpl basketImpl = new BasketImpl();
    int row = -1;
    int selectedId = 0;
    int pid = 0;
@@ -410,9 +406,50 @@ public class Dashboard extends JFrame {
     }
 
     private void btnGoToBasket(ActionEvent e) {
-        Basket basket = new Basket();
+        BasketView basket = new BasketView();
         basket.setVisible(true);
     }
+    public Basket fncBasketDataValid() {
+        try {
+            if (txtOrderCustomer.getText().equals("")){
+                txtOrderCustomer.requestFocus();
+                lblSalesError.setText("Customer Name Empty!");
+            }else if (cmbSalesCategory.getSelectedItem().equals("")){
+                lblSalesError.setText("Category Name Empty!");
+            }else if (txtProduct.getText().equals("")){
+                txtProduct.requestFocus();
+                lblSalesError.setText("Product Empty!");
+            }else if (txtAmount.getText().equals("")){
+                txtAmount.requestFocus();
+                lblSalesError.setText("Amount Empty!");
+            }else {
+                int ktid = cat.categoryIdList().get(cmbSalesCategory.getSelectedIndex());
+                int cid = (int) tblOrderCustomers.getValueAt(row,0);
+                int pid = (int) tblOrderProducts.getValueAt(row,0);
+                String uuid = "uid";
+                String date = "date";
+                int amount = Integer.parseInt(txtAmount.getText().toLowerCase(Locale.ROOT).trim());
+                int status = 0;
+
+               Basket basket = new Basket(0,cid,pid,ktid,uuid,date,amount,status);
+                return basket;
+            }
+        }catch (Exception ex) {
+            System.err.println("fncProductDataValid Error : " +ex);
+        }
+        return null;
+    }
+
+    private void btnAddBasket(ActionEvent e) {
+        Basket basket = fncBasketDataValid();
+            if (basket != null ) {
+               basketImpl.basketInsert(basket);
+                }else {
+                    lblProductError.setText("Insert Error!");
+                }
+    }
+
+
 
 
 
@@ -470,7 +507,7 @@ public class Dashboard extends JFrame {
         btnList = new JButton();
         scrollPane5 = new JScrollPane();
         tblOrderProducts = new JTable();
-        label14 = new JLabel();
+        lblSalesError = new JLabel();
         label17 = new JLabel();
         txtProduct = new JTextField();
         label18 = new JLabel();
@@ -920,8 +957,8 @@ public class Dashboard extends JFrame {
                         scrollPane5.setViewportView(tblOrderProducts);
                     }
 
-                    //---- label14 ----
-                    label14.setText("Choose from the list to sale");
+                    //---- lblSalesError ----
+                    lblSalesError.setText("Choose from the list to sale");
 
                     //---- label17 ----
                     label17.setText("Chosen Product:");
@@ -934,6 +971,7 @@ public class Dashboard extends JFrame {
 
                     //---- btnAddBasket ----
                     btnAddBasket.setText("Add to basket");
+                    btnAddBasket.addActionListener(e -> btnAddBasket(e));
 
                     //======== scrollPane6 ========
                     {
@@ -1017,7 +1055,7 @@ public class Dashboard extends JFrame {
                                                                 .addComponent(txtProduct, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE))
                                                             .addGap(0, 0, Short.MAX_VALUE)))))
                                             .addGroup(panel12Layout.createParallelGroup()
-                                                .addComponent(label14, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(lblSalesError, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE)
                                                 .addComponent(scrollPane5, GroupLayout.PREFERRED_SIZE, 657, GroupLayout.PREFERRED_SIZE)))
                                         .addGap(63, 63, 63))))
                     );
@@ -1042,7 +1080,7 @@ public class Dashboard extends JFrame {
                                             .addComponent(btnGoToBasket, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE))
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE))
                                     .addGroup(panel12Layout.createSequentialGroup()
-                                        .addComponent(label14)
+                                        .addComponent(lblSalesError)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                                         .addGroup(panel12Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                             .addComponent(label22)
@@ -1487,7 +1525,7 @@ public class Dashboard extends JFrame {
     private JButton btnList;
     private JScrollPane scrollPane5;
     private JTable tblOrderProducts;
-    private JLabel label14;
+    private JLabel lblSalesError;
     private JLabel label17;
     private JTextField txtProduct;
     private JLabel label18;

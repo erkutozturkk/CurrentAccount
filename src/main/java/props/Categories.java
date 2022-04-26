@@ -18,6 +18,7 @@ public class Categories {
         this.ct_name = ct_name;
     }
 
+
     public int getKtid() {
         return ctid;
     }

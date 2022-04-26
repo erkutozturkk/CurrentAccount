@@ -26,6 +26,9 @@ public class Customers {
         this.phone = phone;
         this.address = address;
     }
+    public Customers(String name) {
+        this.name = name;
+    }
 
     public int getCid() {
         return cid;
