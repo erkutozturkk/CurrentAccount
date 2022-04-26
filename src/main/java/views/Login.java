@@ -51,6 +51,7 @@ public class Login extends JFrame {
 
     private void btnUsersLogin(ActionEvent e) {
         usersLogin();
+        dispose();
     }
 
     private void txtEmailKeyReleased(KeyEvent e) {
@@ -67,10 +68,12 @@ public class Login extends JFrame {
 
     private void btnSignInClick(ActionEvent e) {
         new SingIn().setVisible(true);
+        dispose();
     }
 
     private void btnForgotPasswordClick(ActionEvent e) {
         new ForgotPassword().setVisible(true);
+        dispose();
     }
 
 

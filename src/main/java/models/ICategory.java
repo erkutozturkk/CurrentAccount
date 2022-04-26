@@ -11,6 +11,7 @@ public interface ICategory {
     int categoryUpdate(Categories categories, int ktid);
     int categoryDelete(int ktid);
     List<Categories> categoryList();
+    List<Integer> categoryIdList();
     DefaultTableModel categoriesTable();
     DefaultComboBoxModel<String> comboBoxCategories();
 

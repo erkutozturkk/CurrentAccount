@@ -40,7 +40,7 @@ public class ProductImpl implements IProduct {
     }
 
     @Override
-    public int productUpdate(Products products) {
+    public int productUpdate(Products products,int pid) {
         int status = 0;
         try {
             String sql = "update products set ctid=?, product_name=?, purchase_price=?, sale_price=?, stock=?, info=? where pid=?";
@@ -51,7 +51,7 @@ public class ProductImpl implements IProduct {
             pre.setInt(4,products.getSale_price());
             pre.setInt(5,products.getStock());
             pre.setString(6, products.getInfo());
-            pre.setInt(7,products.getPid());
+            pre.setInt(7,pid);
             status = pre.executeUpdate();
 
         }catch (Exception ex) {
@@ -69,6 +69,7 @@ public class ProductImpl implements IProduct {
             String sql = "delete from products where pid=?";
             PreparedStatement pre = db.connect().prepareStatement(sql);
             pre.setInt(1,pid);
+            status = pre.executeUpdate();
         }catch (Exception ex) {
             System.err.println("productDeleteDelete Error : " +ex);
         }finally {

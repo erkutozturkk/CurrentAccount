@@ -38,10 +38,11 @@ public class CategoryImpl implements ICategory {
     public int categoryUpdate(Categories categories, int ktid) {
         int status = 0;
         try {
-            String sql = "update categories set ct_name = ?, ct_detail = 0 where ktid = ?";
+            String sql = "update categories set ct_name = ?, ct_detail = ? where ktid = ?";
             PreparedStatement pre = db.connect().prepareStatement(sql);
-            pre.setString(1,categories.getCt_name() );
+            pre.setString(1,categories.getCt_name());
             pre.setString(2, categories.getCt_detail());
+            pre.setInt(3,ktid);
             status = pre.executeUpdate();
         }catch (Exception ex){
             System.err.println("categoriesUpdate Error: " + ex);
@@ -91,6 +92,25 @@ public class CategoryImpl implements ICategory {
             db.close();
         }
         return cat;
+    }
+
+    @Override
+    public List<Integer> categoryIdList() {
+        List<Integer> catId = new ArrayList<>();
+        try {
+            String sql = "select ktid from categories";
+            PreparedStatement pre = db.connect().prepareStatement(sql);
+            ResultSet rs =pre.executeQuery();
+            while (rs.next()){
+                int ktid= rs.getInt("ktid");
+                catId.add(ktid);
+            }
+        }catch (Exception ex){
+            System.err.println("categoriesList Error" + ex);
+        }finally {
+            db.close();
+        }
+        return catId;
     }
 
     @Override

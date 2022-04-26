@@ -16,6 +16,8 @@ import props.Products;
 import utils.Util;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import javax.swing.*;
 import javax.swing.GroupLayout;
@@ -68,7 +70,7 @@ public class Dashboard extends JFrame {
                 lblProductError.setText("Info Empty!");
             }else {
                 String productName = txtProductName.getText().toLowerCase(Locale.ROOT).trim();
-                int ctid = cmbCategory.getSelectedIndex()+1;
+                int ctid = cat.categoryIdList().get(cmbCategory.getSelectedIndex());
                 int purchasePrice = Integer.parseInt(txtPurchasePrice.getText().toLowerCase(Locale.ROOT).trim());
                 int salePrice = Integer.parseInt(txtSalePrice.getText().toLowerCase(Locale.ROOT).trim());
                 int stock = Integer.parseInt(txtStock.getText().toLowerCase(Locale.ROOT).trim());
@@ -199,6 +201,8 @@ public class Dashboard extends JFrame {
                 tblCategoryList.setModel(cat.categoriesTable());
                 txtCategoryName.setText("");
                 txtDefinition.setText("");
+                cmbCategory.setModel(cat.comboBoxCategories());
+                cmbSalesCategory.setModel(cat.comboBoxCategories());
             }else{
                 lblCategoryError.setText("Insert Error");
             }
@@ -206,12 +210,14 @@ public class Dashboard extends JFrame {
     }
     private void btnCategoryUpdateClick(ActionEvent e) {
         Categories categories = fncCategoryDataValid();
-        int selectedId = tblCategoryList.getSelectedRow() + 1;
+        int selectedId = cat.categoryIdList().get(row);
         if (row!=-1){
             int answer=JOptionPane.showConfirmDialog(this,"Are you sure you want to update the category?","Update Window",JOptionPane.YES_OPTION);
             if (answer==0){
                 cat.categoryUpdate(categories,selectedId);
                 tblCategoryList.setModel(cat.categoriesTable());
+                cmbSalesCategory.setModel(cat.comboBoxCategories());
+                cmbCategory.setModel(cat.comboBoxCategories());
                 txtCategoryName.setText("");
                 txtDefinition.setText("");
                 row=-1;
@@ -222,15 +228,18 @@ public class Dashboard extends JFrame {
     }
 
     private void btnCategoryDeleteClick(ActionEvent e) {
+        int selectedId = cat.categoryIdList().get(row);
         if (row != -1) {
             int answer=JOptionPane.showConfirmDialog(this,"Are you sure you want to delete the category?","Delete Window",JOptionPane.YES_OPTION);
             if (answer==0) {
-                int selectedId = tblCategoryList.getSelectedRow() + 1;
                 cat.categoryDelete(selectedId);
                 tblCategoryList.setModel(cat.categoriesTable());
                 txtCategoryName.setText("");
                 txtDefinition.setText("");
+                cmbCategory.setModel(cat.comboBoxCategories());
+                cmbSalesCategory.setModel(cat.comboBoxCategories());
                 row = -1;
+
             }
         }else {
             JOptionPane.showMessageDialog(this,"Please choose.");
@@ -359,6 +368,51 @@ public class Dashboard extends JFrame {
         String txtSearch = txtCustomerSearch.getText().trim();
         tblOrderCustomers.setModel(order.orderCustomersTable(txtSearch));
     }
+    public void rowChosenProduct() {
+        int column = 0;
+        row =tblOrderProducts.getSelectedRow();
+
+        String productName = String.valueOf(tblOrderProducts.getValueAt(row,2));
+
+        txtProduct.setText(productName);
+
+    }
+
+    public void rowChosenCustomer() {
+        int column = 0;
+        row=tblOrderCustomers.getSelectedRow();
+
+        String customerName = String.valueOf(tblOrderCustomers.getValueAt(row,1));
+        String customerSurname = String.valueOf(tblOrderCustomers.getValueAt(row,2));
+        txtOrderCustomer.setText(customerName+ " " + customerSurname);
+    }
+
+    private void tblOrderProductsKeyReleased(KeyEvent e) {
+        rowChosenProduct();
+    }
+
+    private void tblOrderProductsMouseClicked(MouseEvent e) {
+        rowChosenProduct();
+    }
+
+    private void tblOrderCustomersKeyReleased(KeyEvent e) {
+        rowChosenCustomer();
+    }
+
+    private void tblOrderCustomersMouseClicked(MouseEvent e) {
+        rowChosenCustomer();
+    }
+
+    private void btnList(ActionEvent e) {
+        int selectedId = cat.categoryIdList().get(cmbSalesCategory.getSelectedIndex());
+        System.out.println(selectedId);
+        tblOrderProducts.setModel(order.orderProductTable(selectedId));
+    }
+
+    private void btnGoToBasket(ActionEvent e) {
+        Basket basket = new Basket();
+        basket.setVisible(true);
+    }
 
 
 
@@ -413,7 +467,7 @@ public class Dashboard extends JFrame {
         panel12 = new JPanel();
         cmbSalesCategory = new JComboBox();
         label12 = new JLabel();
-        button3 = new JButton();
+        btnList = new JButton();
         scrollPane5 = new JScrollPane();
         tblOrderProducts = new JTable();
         label14 = new JLabel();
@@ -422,11 +476,14 @@ public class Dashboard extends JFrame {
         label18 = new JLabel();
         label19 = new JLabel();
         txtAmount = new JTextField();
-        btnComplete = new JButton();
+        btnAddBasket = new JButton();
         scrollPane6 = new JScrollPane();
         tblOrderCustomers = new JTable();
         txtCustomerSearch = new JTextField();
         label20 = new JLabel();
+        label22 = new JLabel();
+        txtOrderCustomer = new JTextField();
+        btnGoToBasket = new JButton();
         panel3 = new JPanel();
         panel13 = new JPanel();
         scrollPane2 = new JScrollPane();
@@ -840,11 +897,26 @@ public class Dashboard extends JFrame {
                     //---- label12 ----
                     label12.setText("Choose the Product Category to List");
 
-                    //---- button3 ----
-                    button3.setText("List");
+                    //---- btnList ----
+                    btnList.setText("List");
+                    btnList.addActionListener(e -> btnList(e));
 
                     //======== scrollPane5 ========
                     {
+
+                        //---- tblOrderProducts ----
+                        tblOrderProducts.addKeyListener(new KeyAdapter() {
+                            @Override
+                            public void keyReleased(KeyEvent e) {
+                                tblOrderProductsKeyReleased(e);
+                            }
+                        });
+                        tblOrderProducts.addMouseListener(new MouseAdapter() {
+                            @Override
+                            public void mouseClicked(MouseEvent e) {
+                                tblOrderProductsMouseClicked(e);
+                            }
+                        });
                         scrollPane5.setViewportView(tblOrderProducts);
                     }
 
@@ -860,11 +932,25 @@ public class Dashboard extends JFrame {
                     //---- label19 ----
                     label19.setText("Customers:");
 
-                    //---- btnComplete ----
-                    btnComplete.setText("Complete the Sale");
+                    //---- btnAddBasket ----
+                    btnAddBasket.setText("Add to basket");
 
                     //======== scrollPane6 ========
                     {
+
+                        //---- tblOrderCustomers ----
+                        tblOrderCustomers.addKeyListener(new KeyAdapter() {
+                            @Override
+                            public void keyReleased(KeyEvent e) {
+                                tblOrderCustomersKeyReleased(e);
+                            }
+                        });
+                        tblOrderCustomers.addMouseListener(new MouseAdapter() {
+                            @Override
+                            public void mouseClicked(MouseEvent e) {
+                                tblOrderCustomersMouseClicked(e);
+                            }
+                        });
                         scrollPane6.setViewportView(tblOrderCustomers);
                     }
 
@@ -879,6 +965,13 @@ public class Dashboard extends JFrame {
                     //---- label20 ----
                     label20.setText("Search:");
 
+                    //---- label22 ----
+                    label22.setText("Chosen Customer");
+
+                    //---- btnGoToBasket ----
+                    btnGoToBasket.setText("Go to Basket");
+                    btnGoToBasket.addActionListener(e -> btnGoToBasket(e));
+
                     GroupLayout panel12Layout = new GroupLayout(panel12);
                     panel12.setLayout(panel12Layout);
                     panel12Layout.setHorizontalGroup(
@@ -891,36 +984,41 @@ public class Dashboard extends JFrame {
                                             .addComponent(cmbSalesCategory, GroupLayout.PREFERRED_SIZE, 211, GroupLayout.PREFERRED_SIZE)
                                             .addComponent(label12, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                         .addGap(18, 18, 18)
-                                        .addComponent(button3, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnList, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE)
                                         .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                     .addGroup(panel12Layout.createSequentialGroup()
                                         .addGroup(panel12Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                            .addComponent(scrollPane5, GroupLayout.PREFERRED_SIZE, 657, GroupLayout.PREFERRED_SIZE)
                                             .addGroup(GroupLayout.Alignment.LEADING, panel12Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                                                 .addGroup(GroupLayout.Alignment.LEADING, panel12Layout.createSequentialGroup()
                                                     .addComponent(label19, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
                                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(scrollPane6))
+                                                    .addComponent(scrollPane6, GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE))
                                                 .addGroup(GroupLayout.Alignment.LEADING, panel12Layout.createSequentialGroup()
+                                                    .addGroup(panel12Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                                        .addComponent(label18, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(label17, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(label22, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE))
+                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                     .addGroup(panel12Layout.createParallelGroup()
                                                         .addGroup(panel12Layout.createSequentialGroup()
-                                                            .addComponent(label17, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-                                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                            .addComponent(txtProduct, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE))
-                                                        .addGroup(panel12Layout.createSequentialGroup()
-                                                            .addComponent(label18, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-                                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                            .addComponent(txtAmount, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)))
-                                                    .addGap(58, 58, 58)
-                                                    .addGroup(panel12Layout.createParallelGroup()
-                                                        .addGroup(panel12Layout.createSequentialGroup()
-                                                            .addComponent(label20, GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
+                                                            .addComponent(txtAmount, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
+                                                            .addGap(58, 58, 58)
+                                                            .addComponent(label20, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                             .addComponent(txtCustomerSearch, GroupLayout.PREFERRED_SIZE, 289, GroupLayout.PREFERRED_SIZE))
                                                         .addGroup(panel12Layout.createSequentialGroup()
-                                                            .addComponent(btnComplete, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
-                                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
-                                                            .addComponent(label14, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE))))))
+                                                            .addGroup(panel12Layout.createParallelGroup()
+                                                                .addGroup(panel12Layout.createSequentialGroup()
+                                                                    .addComponent(txtOrderCustomer, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
+                                                                    .addGap(34, 34, 34)
+                                                                    .addComponent(btnAddBasket, GroupLayout.PREFERRED_SIZE, 162, GroupLayout.PREFERRED_SIZE)
+                                                                    .addGap(18, 18, 18)
+                                                                    .addComponent(btnGoToBasket, GroupLayout.PREFERRED_SIZE, 158, GroupLayout.PREFERRED_SIZE))
+                                                                .addComponent(txtProduct, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE))
+                                                            .addGap(0, 0, Short.MAX_VALUE)))))
+                                            .addGroup(panel12Layout.createParallelGroup()
+                                                .addComponent(label14, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(scrollPane5, GroupLayout.PREFERRED_SIZE, 657, GroupLayout.PREFERRED_SIZE)))
                                         .addGap(63, 63, 63))))
                     );
                     panel12Layout.setVerticalGroup(
@@ -928,7 +1026,7 @@ public class Dashboard extends JFrame {
                             .addGroup(panel12Layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(panel12Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(button3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnList, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(panel12Layout.createSequentialGroup()
                                         .addComponent(cmbSalesCategory, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -937,23 +1035,38 @@ public class Dashboard extends JFrame {
                                 .addComponent(scrollPane5, GroupLayout.PREFERRED_SIZE, 135, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(panel12Layout.createParallelGroup()
-                                    .addComponent(txtProduct, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(panel12Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addGroup(panel12Layout.createSequentialGroup()
+                                        .addGap(16, 16, 16)
+                                        .addGroup(panel12Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                            .addComponent(btnAddBasket, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(btnGoToBasket, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE))
+                                    .addGroup(panel12Layout.createSequentialGroup()
                                         .addComponent(label14)
-                                        .addComponent(label17))
-                                    .addComponent(btnComplete, GroupLayout.PREFERRED_SIZE, 52, GroupLayout.PREFERRED_SIZE))
-                                .addGap(12, 12, 12)
-                                .addGroup(panel12Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                    .addComponent(label18)
-                                    .addComponent(txtAmount, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtCustomerSearch, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(label20))
-                                .addGap(13, 13, 13)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                                        .addGroup(panel12Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                            .addComponent(label22)
+                                            .addComponent(txtOrderCustomer, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(panel12Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                            .addComponent(label17)
+                                            .addComponent(txtProduct, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE))
+                                        .addGap(2, 2, 2)))
+                                .addGroup(panel12Layout.createParallelGroup()
+                                    .addGroup(panel12Layout.createSequentialGroup()
+                                        .addGroup(panel12Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                            .addComponent(label18)
+                                            .addComponent(txtCustomerSearch, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(label20))
+                                        .addGap(13, 13, 13))
+                                    .addGroup(GroupLayout.Alignment.TRAILING, panel12Layout.createSequentialGroup()
+                                        .addComponent(txtAmount, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)))
                                 .addGroup(panel12Layout.createParallelGroup()
                                     .addGroup(panel12Layout.createSequentialGroup()
                                         .addComponent(label19)
-                                        .addContainerGap(93, Short.MAX_VALUE))
-                                    .addComponent(scrollPane6, GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)))
+                                        .addContainerGap(67, Short.MAX_VALUE))
+                                    .addComponent(scrollPane6, GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)))
                     );
                 }
 
@@ -1371,7 +1484,7 @@ public class Dashboard extends JFrame {
     private JPanel panel12;
     private JComboBox cmbSalesCategory;
     private JLabel label12;
-    private JButton button3;
+    private JButton btnList;
     private JScrollPane scrollPane5;
     private JTable tblOrderProducts;
     private JLabel label14;
@@ -1380,11 +1493,14 @@ public class Dashboard extends JFrame {
     private JLabel label18;
     private JLabel label19;
     private JTextField txtAmount;
-    private JButton btnComplete;
+    private JButton btnAddBasket;
     private JScrollPane scrollPane6;
     private JTable tblOrderCustomers;
     private JTextField txtCustomerSearch;
     private JLabel label20;
+    private JLabel label22;
+    private JTextField txtOrderCustomer;
+    private JButton btnGoToBasket;
     private JPanel panel3;
     private JPanel panel13;
     private JScrollPane scrollPane2;
