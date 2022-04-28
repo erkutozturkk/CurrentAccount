@@ -15,8 +15,8 @@ import java.util.Locale;
 public class OrderImpl implements IOrder {
 
     DB db = new DB();
-    List<Customers> lsc = new ArrayList<>();
     List<Products> lsp = new ArrayList<>();
+    List<Customers> lsc = new ArrayList<>();
     List<Customers> lsSearch = new ArrayList<>();
 
     public OrderImpl() {

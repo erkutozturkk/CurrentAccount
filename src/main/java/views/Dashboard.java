@@ -28,6 +28,8 @@ public class Dashboard extends JFrame {
    OrderImpl order = new OrderImpl();
    BasketImpl basketImpl = new BasketImpl();
    int row = -1;
+   int rowCustomer = -1;
+   int rowStock = -1;
    int selectedId = 0;
    int pid = 0;
     public static void main(String[] args) {
@@ -376,10 +378,10 @@ public class Dashboard extends JFrame {
 
     public void rowChosenCustomer() {
         int column = 0;
-        row=tblOrderCustomers.getSelectedRow();
+        rowCustomer=tblOrderCustomers.getSelectedRow();
 
-        String customerName = String.valueOf(tblOrderCustomers.getValueAt(row,1));
-        String customerSurname = String.valueOf(tblOrderCustomers.getValueAt(row,2));
+        String customerName = String.valueOf(tblOrderCustomers.getValueAt(rowCustomer,1));
+        String customerSurname = String.valueOf(tblOrderCustomers.getValueAt(rowCustomer,2));
         txtOrderCustomer.setText(customerName+ " " + customerSurname);
     }
 
@@ -401,7 +403,6 @@ public class Dashboard extends JFrame {
 
     private void btnList(ActionEvent e) {
         int selectedId = cat.categoryIdList().get(cmbSalesCategory.getSelectedIndex());
-        System.out.println(selectedId);
         tblOrderProducts.setModel(order.orderProductTable(selectedId));
     }
 
@@ -424,7 +425,7 @@ public class Dashboard extends JFrame {
                 lblSalesError.setText("Amount Empty!");
             }else {
                 int ktid = cat.categoryIdList().get(cmbSalesCategory.getSelectedIndex());
-                int cid = (int) tblOrderCustomers.getValueAt(row,0);
+                int cid = (int) tblOrderCustomers.getValueAt(rowCustomer,0);
                 int pid = (int) tblOrderProducts.getValueAt(row,0);
                 String uuid = "uid";
                 String date = "date";
@@ -442,11 +443,20 @@ public class Dashboard extends JFrame {
 
     private void btnAddBasket(ActionEvent e) {
         Basket basket = fncBasketDataValid();
+        rowStock = tblOrderProducts.getSelectedRow();
+        int selectedId = (int) tblOrderProducts.getValueAt(rowStock,0);
+        int amount = Integer.parseInt(txtAmount.getText());
+        boolean control = basketImpl.amountControl(selectedId,amount);
+        if (!control) {
+            JOptionPane.showMessageDialog(this,"Please reduce the amount");
+        }else {
             if (basket != null ) {
-               basketImpl.basketInsert(basket);
-                }else {
-                    lblProductError.setText("Insert Error!");
-                }
+                basketImpl.basketInsert(basket);
+                JOptionPane.showMessageDialog(this,"Product added to basket");
+            }else {
+                lblProductError.setText("Insert Error!");
+            }
+        }
     }
 
 

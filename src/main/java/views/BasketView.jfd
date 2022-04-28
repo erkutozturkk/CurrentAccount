@@ -4,8 +4,8 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq {space :::p, par l {comp scrollPane1::::671:x, seq {comp btnAddProducts:::p::p, space s:::p, comp btnCompleteSale:::p::p, space :0:385:x}}, space :::p}}"
-			"$verticalGroup": "par l {seq l {space :::p, comp scrollPane1:::p:245:p, space s:::p, par b {comp btnAddProducts::b:p:38:p, comp btnCompleteSale::b:p:38:p}, space ::76:x}}"
+			"$horizontalGroup": "par l {seq {par l {seq t {space :::p, par t {seq t {comp btnBasketDelete:::p:110:p, space ::275:x, comp btnAddProducts:::p::p, space s:::p, comp btnCompleteSale:::p::p}, seq l {comp label1:::p::p, space s:::p, comp txtCustomerBasketSearch:::p:105:p, space :0:459:x}, comp scrollPane1::t::671:x, comp scrollPane2::t::671:x}}, seq {par l {seq l {space :p:270:p, comp label2:::p::p}, seq l {space :::p, comp btnBasket:::p::p}}, space :0:284:x}}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, par b {comp label1::b:p::p, comp txtCustomerBasketSearch::b:p::p}, space :::p, comp scrollPane2:::p:50:p, space s:::p, comp btnBasket:::p::p, space :p:4:p, comp label2:::p::p, space :::p, comp scrollPane1:::p:184:p, space :::p, par b {comp btnCompleteSale::b:p:38:p, comp btnAddProducts::b:p:38:p, comp btnBasketDelete::b:p::p}, space :p:7:p}}"
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
@@ -22,10 +22,39 @@ new FormModel {
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "btnCompleteSale"
 				"text": "Complete the Sale"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnCompleteSale", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label1"
+				"text": "Search Customer"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "txtCustomerBasketSearch"
+				addEvent( new FormEvent( "java.awt.event.KeyListener", "keyReleased", "txtCustomerBasketSearchKeyReleased", true ) )
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "scrollPane2"
+				add( new FormComponent( "javax.swing.JTable" ) {
+					name: "tblBasketCustomer"
+				} )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label2"
+				"text": "BASKET OF CUSTOMER"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnBasket"
+				"text": "List Basket"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnBasketList", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnBasketDelete"
+				"text": "Product Delete"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnBasketDelete", true ) )
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 685, 415 )
+			"location": new java.awt.Point( 0, 10 )
+			"size": new java.awt.Dimension( 685, 450 )
 		} )
 	}
 }
