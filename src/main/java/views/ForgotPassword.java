@@ -61,7 +61,7 @@ public class ForgotPassword extends JFrame {
     private void btnNewPassword(ActionEvent e) {
         Users user=fncDataValid();
 
-        if(txtverificationCode.equals(UserImpl.verificationCode)){
+        if(txtverificationCode.equals(Login.verificationCode)){
             userImpl.usersForgotPassword(user);
         }else{
             lblError.setText("Verification Code is Wrong");

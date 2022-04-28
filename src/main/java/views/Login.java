@@ -9,6 +9,8 @@ import models.UserImpl;
 import utils.Util;
 
 import java.awt.*;
+import java.util.Locale;
+import java.util.Random;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 
@@ -17,6 +19,9 @@ import javax.swing.GroupLayout;
  */
 public class Login extends JFrame {
     UserImpl user = new UserImpl();
+    public static String emailChange="";
+    boolean status=false;
+    public static String verificationCode="";
 
     public static void main(String[] args) {
         new Login().setVisible(true);
@@ -34,6 +39,7 @@ public class Login extends JFrame {
         }else if (!Util.isValidEmailAddress(user_email)) {
             lblError.setText("E-Mail Format Error!");
         }else if (password.length() == 0) {
+            emailChange = txtEmail.getText();
             lblError.setText("Please Entry Password");
             txtPassword.requestFocus();
         }else {
@@ -51,6 +57,7 @@ public class Login extends JFrame {
 
     private void btnUsersLogin(ActionEvent e) {
         usersLogin();
+        new Dashboard().setVisible(true);
         dispose();
     }
 
@@ -72,8 +79,38 @@ public class Login extends JFrame {
     }
 
     private void btnForgotPasswordClick(ActionEvent e) {
-        new ForgotPassword().setVisible(true);
-        dispose();
+        String email=txtEmail.getText().trim().toLowerCase(Locale.ROOT);
+        status=user.userGetEmail(email);
+        if(status){
+            generatingVerificationCode();
+
+
+            String to= UserImpl.emailAddress;
+            String sub="Java Project Forget Password";
+            String msg="\n\n\t\tVerification Code: "+verificationCode;
+
+            Util.sendMail(to,sub,msg);
+
+
+
+            new ForgotPassword().setVisible(true);
+            dispose();
+        }else{
+            lblError.setText("Please Enter a Valid Email Address");
+        }
+    }
+    public void generatingVerificationCode() {
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 5;
+        Random random = new Random();
+
+        verificationCode = random.ints(leftLimit, rightLimit + 1)
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+
+        System.out.println(verificationCode);
     }
 
 

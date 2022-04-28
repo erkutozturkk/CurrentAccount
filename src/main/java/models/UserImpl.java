@@ -3,6 +3,7 @@ package models;
 import props.Users;
 import utils.DB;
 import utils.Util;
+import views.ChangePassword;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,8 +13,8 @@ public class UserImpl implements IUsers{
     DB db = new DB();
     public static String userName = "";
     public static int uid = 0;
-    public static int verificationCode = new Random().nextInt(900000) + 100000;
-    public static String newPassword="";
+    public static String emailAddress = "";
+    public static String userPassword = "";
     @Override
     public boolean usersLogin(String user_email, String password) {
         boolean status= false;
@@ -41,7 +42,7 @@ public class UserImpl implements IUsers{
         int status=0;
 
         try {
-            String sql="update user set user_name=?,  user_surname=?,  user_email=?,  password=? where uid=?";
+            String sql="update users set user_name=?,  user_surname=?,  user_email=?,  password=? where uid=?";
             PreparedStatement pre=db.connect().prepareStatement(sql);
             pre.setString(1, users.getUser_name());
             pre.setString(2, users.getUser_surname());
@@ -77,21 +78,83 @@ public class UserImpl implements IUsers{
     }
 
     @Override
-    public int usersForgotPassword(Users users) {
+    public int usersChangePassword(Users users) {
         int status=0;
         try {
             String sql="update users set password=? where user_email=?";
             PreparedStatement pre=db.connect().prepareStatement(sql);
-            pre.setString(1,Util.MD5(newPassword));
-            pre.setString(2,users.getUser_email());
+            pre.setString(1,Util.MD5(ChangePassword.rePassword));
+            pre.setString(2,emailAddress);
             status=pre.executeUpdate();
 
+
         }catch (Exception e){
-            System.out.println("usersForgotPassword Error: "+e);
+            System.out.println("userChangePassword Error: "+e);
         }finally {
             db.close();
         }
         return status;
     }
+
+    @Override
+    public int usersForgotPassword(Users users) {
+        int status=0;
+        try {
+            String sql="update users set password=? where user_email=?";
+            PreparedStatement pre=db.connect().prepareStatement(sql);
+            pre.setString(1,Util.MD5(userPassword));
+            pre.setString(2,emailAddress);
+            status=pre.executeUpdate();
+
+        }catch (Exception e){
+            System.out.println("userForgetPassword Error: "+e);
+        }finally {
+            db.close();
+        }
+        return status;
+    }
+
+    @Override
+    public boolean userGetEmail(String user_email) {
+        boolean status=false;
+        try {
+            String sql="Select * from users where user_email=?";
+            PreparedStatement pre=db.connect().prepareStatement(sql);
+            pre.setString(1,user_email);
+
+            ResultSet rs=pre.executeQuery();
+            status= rs.next();
+            if(status){
+                emailAddress=rs.getString("email");
+            }
+
+        }catch (Exception e){
+            System.err.println("userGetEmail Error"+e);
+        }finally {
+            db.close();
+        }
+        return status;
+    }
+
+    @Override
+    public boolean userGetPassword(String password) {
+        boolean status=false;
+        try {
+            String sql="Select * from users where password=?";
+            PreparedStatement pre=db.connect().prepareStatement(sql);
+            pre.setString(1,password);
+
+            ResultSet rs=pre.executeQuery();
+            status= rs.next();
+            if(status)
+                userPassword=rs.getString("password");
+
+        }catch (Exception e){
+            System.err.println("userPassword Error"+e);
+        }finally {
+            db.close();
+        }
+        return status;
+        }
 }
 
