@@ -4,13 +4,14 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq t {space :p:15:p, comp label1:::p::p, space ::610:x, comp button1:::p::p, space :p:30:p}, seq l {space :::p, comp tabbedPane1::::756:x, space :::p}}"
-			"$verticalGroup": "par l {seq l {space :::p, par b {comp button1::b:p::p, comp label1::b:p::p}, space u:::p, comp tabbedPane1:::p:482:p, space ::13:x}}"
+			"$horizontalGroup": "par l {seq {space :::p, par l {seq t {comp button1:::p::p, space s:::p, comp label1:::p::p, space ::523:x, comp btnLogout:::p::p, space :p:30:p}, seq l {comp tabbedPane1::::756:x, space :::p}}}}"
+			"$verticalGroup": "par l {seq l {space :::p, par l {comp btnLogout:::p::p, par b:t {comp button1::b:p::p, comp label1::b:p::p}}, space u:::p, comp tabbedPane1:::p:482:p, space ::13:x}}"
 		} ) {
 			name: "this"
 			add( new FormComponent( "javax.swing.JButton" ) {
-				name: "button1"
+				name: "btnLogout"
 				"text": "Log out"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnLogoutClick", true ) )
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label1"
@@ -103,8 +104,8 @@ new FormModel {
 					"title": "Customers"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {par l:::p {seq l {space :::p, par l {seq {comp label2:::p::p, space u:::p, comp radioButton1:::p::p, space :0:0:p, comp radioButton2:::p::p, space s:::p, comp radioButton3:::p::p, space :p:38:p}, seq t {comp panel9:::p::p, space u:::p}}, par l {seq {comp textField1:::p:420:p, space :0:0:x}, comp panel10:::::x, comp panel11::t:::x}}, seq l {space :p:14:p, comp panel8:::p:689:p}, seq l {space :p:80:p, comp label3:::p::p, space s:::p, comp spinner1:::p:50:p, space s:::p, comp spinner2:::p:49:p, space u:::p, comp spinner6:::p:49:p, space s:::p, comp label4:::p:53:p, space s:::p, comp spinner5:::p:48:p, space s:::p, comp spinner3:::p:49:p, space s:::p, comp spinner4:::p:50:p}}, space :p:22:p}}"
-					"$verticalGroup": "par l {seq l {space :::p, par b {comp label2::b:p::p, comp radioButton1::b:p::p, comp radioButton2::b:p::p, comp radioButton3::b:p::p, comp textField1::b:p::p}, space :p:8:p, par b {comp spinner4::b:p::p, comp spinner3::b:p::p, comp spinner5::b:p::p, comp label4::b:p::p, comp spinner6::b:p::p, comp spinner2::b:p:30:p, comp spinner1::b:p::p, comp label3::b:p::p}, space :p:16:p, comp panel8:::p::p, space :::p, par l:::p {seq l {comp panel10:::p::p, space :::x, comp panel11:::p::p}, comp panel9:::p::p}, space :::x}}"
+					"$horizontalGroup": "par l {seq l {space :p:14:p, par l:::p {seq {comp label2:::p::p, space u:::p, comp radioButton1:::p::p, space :0:0:p, comp radioButton2:::p::p, space s:::p, comp radioButton3:::p::p, space :p:38:p, comp textField1:::::x}, seq l {comp panel9:::p::p, space :p:35:p, comp panel10:::::x}, comp panel8::l:p:689:p}, space :p:73:p}}"
+					"$verticalGroup": "par l {seq l {space :::p, par b {comp label2::b:p::p, comp radioButton1::b:p::p, comp radioButton2::b:p::p, comp radioButton3::b:p::p, comp textField1::b:p::p}, space s:::p, comp panel8:::::x, space :::p, par l {seq {space :0:0:x, comp panel9:::p::p}, comp panel10:::::x}, space :::p}}"
 				} ) {
 					name: "panel7"
 					"border": new javax.swing.border.TitledBorder( "Filter" )
@@ -114,78 +115,48 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JRadioButton" ) {
 						name: "radioButton1"
-						"text": "text"
+						"text": "Customer"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
 					} )
 					add( new FormComponent( "javax.swing.JRadioButton" ) {
 						name: "radioButton2"
-						"text": "text"
+						"text": "Product"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
 					} )
 					add( new FormComponent( "javax.swing.JRadioButton" ) {
 						name: "radioButton3"
-						"text": "text"
+						"text": "Category"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "textField1"
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 						"$horizontalGroup": "par l {seq t {space :::x, comp scrollPane1:::p:668:p, space :::p}}"
-						"$verticalGroup": "par l {seq l {space :::p, comp scrollPane1::::97:x, space :::p}}"
+						"$verticalGroup": "par l {seq l {space :::p, comp scrollPane1::::201:x, space :::p}}"
 					} ) {
 						name: "panel8"
 						"border": new javax.swing.border.TitledBorder( "Result" )
 						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 							name: "scrollPane1"
 							add( new FormComponent( "javax.swing.JTable" ) {
-								name: "table1"
+								name: "tblBasketReport"
 							} )
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {space :0:230:x}"
-						"$verticalGroup": "par l {space :0:149:x}"
+						"$horizontalGroup": "par l {space :0:311:x}"
+						"$verticalGroup": "par l {space :0:102:x}"
 					} ) {
 						name: "panel9"
 						"border": new javax.swing.border.TitledBorder( "PROFIT AND LOSS" )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 						"$horizontalGroup": "par l {space :0:0:x}"
-						"$verticalGroup": "par l {space :0:57:x}"
+						"$verticalGroup": "par l {space :0:0:x}"
 					} ) {
 						name: "panel10"
 						"border": new javax.swing.border.TitledBorder( "Sold" )
-					} )
-					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {space :0:0:x}"
-						"$verticalGroup": "par l {space :0:57:x}"
-					} ) {
-						name: "panel11"
-						"border": new javax.swing.border.TitledBorder( "Information" )
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label3"
-						"text": "Date Range:"
-					} )
-					add( new FormComponent( "javax.swing.JSpinner" ) {
-						name: "spinner1"
-					} )
-					add( new FormComponent( "javax.swing.JSpinner" ) {
-						name: "spinner2"
-					} )
-					add( new FormComponent( "javax.swing.JSpinner" ) {
-						name: "spinner6"
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label4"
-						"text": "between"
-					} )
-					add( new FormComponent( "javax.swing.JSpinner" ) {
-						name: "spinner5"
-					} )
-					add( new FormComponent( "javax.swing.JSpinner" ) {
-						name: "spinner3"
-					} )
-					add( new FormComponent( "javax.swing.JSpinner" ) {
-						name: "spinner4"
 					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "Reports"
@@ -436,9 +407,19 @@ new FormModel {
 					"title": "Category Management"
 				} )
 			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button1"
+				"text": "USER"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnChangePassword", true ) )
+			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
 			"size": new java.awt.Dimension( 770, 575 )
+		} )
+		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
+			name: "buttonGroup1"
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 591 )
 		} )
 	}
 }

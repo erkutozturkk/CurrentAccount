@@ -4,7 +4,10 @@ import javax.mail.*;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Properties;
+import java.util.UUID;
 
 public class Util {
     public static boolean isValidEmailAddress(String email) {
@@ -57,5 +60,10 @@ public class Util {
         } catch (MessagingException e) {
             System.out.println("SendMail Error: "+e);
         }
+    }
+    public static String dateTimeNow(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime now = LocalDateTime.now();
+        return dtf.format(now);
     }
 }
